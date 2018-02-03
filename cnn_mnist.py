@@ -24,7 +24,7 @@ def cnn_model_fn(features, labels, mode):
     )
 
     # Pooling layer #1
-    pool1 = tf.layers.max_pooling2d(inputs=conv1, pool_size = [2, 2], strides = 2)
+    pool1 = tf.layers.max_pooling2d(inputs = conv1, pool_size = [2, 2], strides = 2)
 
     # Convolution layer #2
     # Convolution layer #1
@@ -37,8 +37,16 @@ def cnn_model_fn(features, labels, mode):
     )
 
     # Pooling layer #2
-    pool1 = tf.layers.max_pooling2d(inputs=conv2, pool_size = [2, 2], strides = 2)
+    pool2 = tf.layers.max_pooling2d(inputs = conv2, pool_size = [2, 2], strides = 2)
 
+    # Flatten pool2 output (dense layer)
+    pool2_flat = tf.reshape(pool2, [-1, 7 * 7 * 64])
+
+    # Dense layer
+    dense = tf.layers.dense(inputs = pool2_flat, units = 1024, activation = tf.nn.relu)
+
+    # Dropout regularisation (avoid overfitting)
+    droput = tf.layers.dropout(inputs = dense, rate = 0.4, training = mode == tf.estimator.ModeKeys.TRAIN)
 
 # Logging flag
 tf.logging.set_verbosity(tf.logging.INFO)
