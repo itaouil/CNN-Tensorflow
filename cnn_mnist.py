@@ -1,7 +1,3 @@
-from __future__ import division
-from __future__ import print_function
-from __future__ import absolute_division
-
 # Imports
 import numpy as np
 import tensorflow as tf
@@ -66,7 +62,7 @@ def cnn_model_fn(features, labels, mode):
 
     # Predictions
     predictions = {
-        "classes": tf.argmax(inputs = logits, axis = 1),
+        "classes": tf.argmax(input = logits, axis = 1),
         "probabilities": tf.nn.softmax(logits, name = "softmax_tensor")
     }
 
@@ -84,7 +80,7 @@ def cnn_model_fn(features, labels, mode):
         optimizer = tf.train.GradientDescentOptimizer(learning_rate = 0.001)
         train_op = optimizer.minimize(
             loss = loss,
-            global_step = tf.train.get_global_step())
+            global_step = tf.train.get_global_step()
         )
         return tf.estimator.EstimatorSpec(mode = mode, loss = loss, train_op = train_op)
 
@@ -102,7 +98,7 @@ def cnn_model_fn(features, labels, mode):
         eval_metric_ops = eval_metric_ops
     )
 
-def main():
+def main(unused_args):
     # Split dataset in training and test sets
     mnist = tf.contrib.learn.datasets.load_dataset("mnist")
     train_data = mnist.train.images
@@ -118,7 +114,7 @@ def main():
 
     # Loggin for predictions
     tensors_to_log = {"probabilities": "softmax_tensor"}
-    logging_hook = tf.train.LogginTensorHook(
+    logging_hook = tf.train.LoggingTensorHook(
         tensors = tensors_to_log,
         every_n_iter = 50
     )
